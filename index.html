@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TWOOFACE – Admin + Website</title>
+  <!-- Tailwind via CDN + custom styles -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    /* custom gold accent */
+    :root {
+      --gold: #d4a853;
+      --gold-light: #e8c96e;
+      --glass-bg: rgba(20, 20, 30, 0.6);
+      --glass-border: rgba(255, 255, 255, 0.08);
+    }
+    * { scroll-behavior: smooth; }
+    body {
+      background: #0b0b12;
+      color: #f0f0f5;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+    .glass {
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+    }
+    .gold-text { color: var(--gold); }
+    .gold-border { border-color: var(--gold); }
+    .gold-bg { background: var(--gold); }
+    .hover-gold:hover { color: var(--gold-light); transition: color 0.3s ease; }
+    .hero-overlay { background: radial-gradient(ellipse at center, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.8) 100%); }
+    .nav-link { position: relative; padding-bottom: 4px; }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: ;
+      background: var(--gold);
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+    .nav-link:hover::after { width: 100%; }
+    .player-progress { background: #2a2a3a; border-radius: 999px; height: 4px; }
+    .player-progress-fill { width: 45%; height: 100%; background: var(--gold); border-radius: 999px; }
+    .album-card { transition: transform 0.4s ease, box-shadow 0.4s ease; }
+    .album-card:hover { transform: translateY(-8px); box-shadow: 0 24px 40px -12px rgba(212, 168, 83, 0.25); }
+    .img-placeholder { background: linear-gradient(135deg, #1a1a2e, #16213e); }
+    .img-placeholder-light { background: linear-gradient(135deg, #2a2a3a, #1a1a2e); }
+    @media (max-width: 640px) { .hero-title { font-size: 3rem !important; } }
+
+    /* admin toggle */
+    #admin-badge {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 999;
+      background: #1e1e2a;
+      border: 1px solid #d4a85340;
+      border-radius: 60px;
+      padding: 8px 16px 8px 8px;
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.7);
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    #admin-badge:hover { background: #2a2a3a; border-color: #d4a853; }
+    .admin-panel {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      width: 340px;
+      max-height: 80vh;
+      overflow-y: auto;
+      z-index: 9999;
+      background: rgba(12, 12, 22, 0.95);
+      backdrop-filter: blur(12px);
+      border: 1px solid #d4a853;
+      border-radius: 32px;
+      padding: 24px;
+      display: none;
+      box-shadow: 0 25px 50px -12px black;
+    }
+    .admin-panel.open { display: block; }
+    .admin-panel label { font-size: 13px; font-weight: 500; color: #ccc; }
+    .admin-panel input, .admin-panel textarea {
+      background: #1a1a28;
+      border: 1px solid #2f2f42;
+      color: white;
+      border-radius: 40px;
+      padding: 10px 16px;
+      width: 100%;
+      margin-bottom: 12px;
+    }
+    .admin-panel input[type="file"] { padding: 6px; }
+    .admin-panel button {
+      background: var(--gold);
+      color: black;
+      font-weight: 600;
+      padding: 10px 20px;
+      border-radius: 40px;
+      border: none;
+      transition: 0.2s;
+      margin-top: 4px;
+    }
+    .admin-panel button:hover { background: #e8c96e; }
+    .news-item, .price-item { background: #181824; border-radius: 20px; padding: 12px 16px; margin: 8px 0; border-left: 4px solid #d4a853; }
+    .admin-hidden { display: none; }
+    .admin-show { display: block; }
+  </style>
+</head>
+<body>
+
+<!-- ADMIN BADGE (toggle panel) -->
+<div id="admin-badge" onclick="toggleAdmin()">
+  <i class="fas fa-crown text-yellow-500 text-xl"></i>
+  <span class="text-sm font-medium text-white">Admin</span>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="adminPanel" class="admin-panel">
+  <div class="flex items-center justify-between mb-4">
+    <h3 class="text-xl font-bold gold-text"><i class="fas fa-crown mr-2"></i>Painel TWOOFACE</h3>
+    <button onclick="toggleAdmin()" class="text-white/60 hover:text-white text-xl"><i class="fas fa-times"></i></button>
+  </div>
+  <p class="text-xs text-gray-400 mb-4">Edite fotos, músicas, notícias e preços. Tudo atualiza automaticamente.</p>
+
+  <!-- Editar Fotos (Hero + sobre) -->
+  <div class="mb-4">
+    <label>📸 Foto Hero (URL)</label>
+    <input type="text" id="heroImgInput" placeholder="colar URL da imagem..." value://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=1200&q=80" />
+    <label>🎵 Foto do player (URL)</label <input type="text" id="playerImgInput" placeholder="URL capa disco..." value="https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=400&q=40" />
+  </div>
+
+  <!-- Upload Música (simulação) -->
+  <div class="mb-4">
+    <label>🎧 Ad faixa (nome + arquivo)</label>
+    <div class="flex gap-2">
+      <input type="text" id="trackNameInput" placeholder="Nome da faixa" class="w-1/2" />
+      <input type="text" id="trackDuration" placeholder="3:42" class="w-1/4" />
+      <button onclick="addTrack()" class="w-1/4 px-2 text-sm">+</button>
+    </div>
+    <div id="trackList" class="space-y-1 mt-2">
+      <!-- tracks will render here -->
+    </div>
+  </div>
+
+  <!-- Notícias -->
+  <div class="mb-4">
+    <label>📰 Nova notícia</label>
+    <textarea id="newsInput" rows="2" placeholder="Escreva a notícia..."></textarea>
+    <button onclick="addNews()">Publicar notícia</button>
+    <div id="newsList" class="mt-2"></div>
+  </div>
+
+  <!-- Preços (automatizado) -->
+  <div class="mb-4">
+    <label>💲 Preço do álb merchandise</label>
+    <div class="flex gap-2">
+      <input type="text" id="priceLabel" placeholder="Ex: 'Vinil'" class="w-1/2" />
+      <input type="text" id="priceValue" placeholder="€29.90" class="w-1/4" />
+      <button onclick="addPrice()" class="w-1/4 px-2 text-sm">+</button>
+    </div>
+    <div id="priceList" class="space-y-1 mt-2"></div>
+  </div>
+  <p class="text-[10px] text-gray-500 mt-4 border-t border-white/10 pt-3">* As alterações são instantâneas e refletem no site.</p>
+</div>
+
+<!-- STICKY NAV -->
+<nav class="fixed top-0 left-0 w-full z-50 glass border-b border-white/5">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <a href="#" class="text-2xl font-bold tracking-widest gold-text">TWOOFACE</a>
+    <div class="hidden md:flex items-center gap-8 text-sm font-medium uppercase tracking-wider text-gray-300">
+      <a href="#home" class="nav-link">Home</a>
+      <a href="#store" class="nav-link">Store</a>
+      <a href="#albums" class="nav-link">Albums</a>
+      <a href="#news" class="nav-link">News</a>
+      <a href="#contact" class="nav-link">Contact</a>
+    </div>
+    <button class="md:hidden text-white text-2xl" aria-label="menu"><i class="fas fa-bars"></i></button>
+  </div>
+</nav>
+
+<!-- HERO SECTION (background dinâmico) -->
+<section id="home" class="relative h-screen flex items-center justify-center overflow-hidden">
+  <div id="heroBackground" class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=1200&q=80');"></div>
+  <div class="hero-overlay absolute inset-0"></div>
+  <div class="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_20%_50%,_#d4a853_0%,_transparent_60%)]"></div>
+  <div class="relative z-10 text-center px-6 max-w-4xl">
+    <h1 class="text-6xl md:text-8xl font-extrabold tracking-tight leading-none mb-4 gold-text drop-shadow-2xl">TWOOFACE</h1>
+    <p class="text-2xl md:text-3xl font-light text-gray-200 mb-8 drop-shadow">New Music Out Now</p>
+    <div class="flex flex-wrap justify-center gap-4">
+      <a href="#" class="px-8 py-4 gold-bg text-black font-semibold rounded-full hover:bg-yellow-500 transition shadow-2xl text-lg">Listen Now</a>
+      <a href="#" class="px-8 py-4 border-2 border-white/30 text-white font-semibold rounded-full hover:bg-white/10 transition text-lg">Buy Music</a>
+      <a href="#" class="px-8 py-4 border-2 gold-border gold-text font-semibold rounded-full hover:bg-gold/10 transition text-lg">Latest Album</a>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED PLAYLIST -->
+<section class="py-20 px-6 max-w-7xl mx-auto">
+  <h2 class="text-3xl md:text-4xl font-bold mb-2 gold-text">Featured Playlist</h2>
+  <p class="text-gray-400 mb-10">Listen to the latest sounds</p>
+  <div class="glass p-6 md:p-8">
+    <div class="flex flex-col md:flex-row gap-6 items-start">
+      <!-- capa player dinâmica -->
+      <div id="playerCover" class="w-full md:w-48 h-48 rounded-2xl img-placeholder flex items-center justify-center text-5xl opacity-60 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=400&q=40');">
+        <i class="fas fa-compact-disc"></i>
+      </div>
+      <div class="flex-1 w-full">
+        <div id="playlistTracks" class="space-y-4">
+          <!-- generated by js -->
+        </div>
+        <div class="mt-6">
+          <div class="player-progress w-full"><div class="player-progress-fill"></div></div>
+          <div class="flex justify-between text-xs text-gray-500 mt-1"><span>1:22</span><span>-2:20</span></div>
+        </div>
+        <div class="flex flex-wrap gap-3 mt-6">
+          <span class="text-xs text-gray-400 uppercase tracking-wider self-center mr-2">Connect:</span>
+          <a href="#" class="text-lg text-white/70 hover:text-green-500 transition"><i class="fab fa-spotify"></i></a>
+          <a href="#" class="text-lg text-white/70 hover:text-pink-500 transition"><i class="fab fa-apple"></i></a>
+          <a href="#" class="text-lg text-white/70 hover:text-orange-500 transition"><i class="fas fa-music"></i></a>
+          <a href="#" class="text-lg text-white/70 hover:text-red-500 transition"><i class="fab fa-youtube"></i></a>
+          <a href="#" class="text-lg text-white/70 hover:text-orange-300 transition"><i class="fab fa-soundcloud"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STREAMING PLATFORMS -->
+<section class="py-16 px-6 max-w-7xl mx-auto">
+  <h2 class="text-3xl font-bold gold-text mb-8 text-center">Streaming Platforms</h2>
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+    <a href="#" class="glass p-6 flex flex-col items-center gap-3 hover:scale-105 transition duration-300"><i class="fab fa-spotify text-4xl text-green-500"></i><span class="font-medium">Spotify</span></a>
+    <a href="#" class="glass p-6 flex flex-col items-center gap-3 hover:scale-105 transition duration-300"><i class="fab fa-apple text-4xl text-pink-400"></i><span class="font-medium">Apple Music</span></a>
+    <a href="#" class="glass p-6 flex flex-col items-center gap-3 hover:scale-105 transition duration-300"><i class="fas fa-music text-4xl text-orange-500"></i><span class="font-medium">Audiom</span></a>
+    <a href="#" class="glass p-6 flex flex-col items-center gap-3 hover:scale-105 transition duration-300"><i class="fab fa-youtube text-4xl text-red-500"></i><span class="font-medium">YouTube Music</span></a>
+    <a href="#" class="glass p-6 flex flex-col items-center gap-3 hover:scale-105 transition duration-300"><i class="fab fa-soundcloud text-4xl text-orange-400"></i><span class="font-medium">SoundCloud</span></a>
+  </div>
+</section>
+
+<!-- ABOUT TWOOFACE -->
+<section class="py-20 px-6 max-w-7xl mx-auto">
+  <div class="flex flex-col md:flex-row gap-12 items-center">
+    <div class="w-full md:w-1/2">
+      <div class="w-full aspect-square rounded-3xl img-placeholder-light flex items-center justify-center text-7xl opacity-40"><i class="fas fa-user"></i></div>
+    </div>
+    <div class="w-full md:w-1/2">
+      <h2 class="text-4xl font-bold mb-6 gold-text">About Twooface</h2>
+      <p class="text-gray-300 leading-relaxed text-lg">Twooface is a visionary recording artist known for blending dark cinematic soundscapes with raw emotion. Hailing from the underground, his music transcends genres—merging trip-hop, electronic, and alternative R&B. With millions of streams worldwide, he continues to push boundaries.</p>
+      <p class="text-gray-400 mt-4">"Every track is a story. Every album is a world."</p>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER + SEÇÃO PREÇOS -->
+<section class="py-16 px-6 max-w-3xl mx-auto text-center">
+  <div class="glass p-10">
+    <h2 class="text-3xl font-bold gold-text mb-3">Merch & Prices</h2>
+    <div id="adminPricesDisplay" class="space-y-2 text-left mb-6">
+      <!-- preços via js -->
+    </div>
+    <h2 class="text-3xl font-bold gold-text mb-3">Stay Connected</h2>
+    <p class="text-gray-400 mb-8">Get exclusive releases, merch drops, and behind-the-scenes content.</p>
+    <form class="flex flex-col sm:flex-row gap-3-lg mx-auto">
+      <input type="email" placeholder="your@email.com" class="flex-1 px-5 py-3 rounded-full bg-black/40 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-gold">
+      <button type="submit" class="px-8 py-3 gold-bg text-black font-semibold rounded-full hover:bg-yellow-500 transition">Subscribe</button>
+    </form>
+  </div>
+</section>
+
+<!-- MOCK SECTIONS -->
+<div id=" class="py-20 text-center text-gray-500 border-t border-white/5">Store section (dynamic prices above)</div>
+<div id="albums" class="py-20 text-center text-gray-500 border-t border-white/5">Albums section (mock)</div>
+<div id="news" class="py-20 text-center text-gray-500 border-t border-white/5">
+  <h3 class="gold-2xl mb-4">Últimas notícias</h3>
+  <div id="newsDisplay" class="max-w-xl mx-auto"></div>
+</div>
+<div id="contact" class="py--center text-gray-500 border-t border-white/5">Contact section (mock)</div>
+
+<footer class="border-t border-white/10 py-10 px-6">
+  <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+    <p class="text-gray-500 text-sm">© 2025 TWOOFACE. All rights reserved.</p>
+    <div class="flex gap-5 text-2xl text-gray-400">
+      <a href="#" class="hover:text-pink-500 transition"><i class="fab fa-instagram"></i></a>
+      <a href="#" class="hover:text-blue-600 transition"><i class="fab fa-facebook"></i></a>
+      <a href="#" class="hover:text-gray-200 transition"><i class="fab fa-tiktok"></i></a>
+      <a href="#" class="hover:text-red-500 transition"><i class="fab fa-youtube"></i></a>
+      <a href="#" class="hover:text-green-500 transition"><i class="fab fa-spotify"></i></a>
+      <a href="#" class="hover:text-pink-400 transition"><i class="fab fa-apple"></i></a>
+      <a href="#" class="hover:text-orange-400 transition"><i class="fab fa-soundcloud"></i></a>
+      <a href="#" class="hover:text-gray-300 transition"><i class="fab fa-x-twitter"></i></a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // === ADMIN STATE ===
+  const defaultTracks = [
+    { name: 'PornStar', duration: '3:42' },
+    { name: 'Shadow Dance', duration: '4:15' },
+    { name: 'Neon Glow', duration: '3:58' },
+  ];
+
+  let tracks = JSON.parse(localStorage.getItem('tracks')) || defaultTracks;
+  let newsItems = JSON.parse(localStorage.getItem('news')) || [];
+  let prices = JSON.parse(localStorage.getItem('prices')) || [];
+
+  function saveState() {
+    localStorage.setItem('tracks', JSON.stringify(tracks));
+    localStorage.setItem('news', JSON.stringify(newsItems));
+    localStorage.setItem('prices', JSON.stringify(prices));
+  }
+
+  // render all
+  function renderAll() {
+    renderPlaylist();
+    renderNews();
+    renderPrices();
+  }
+
+  function renderPlaylist() {
+    const container = document.getElementById('playlistTracks');
+    container.innerHTML = tracks.map((t, i) => `
+      <div class="flex items-center justify-between text-sm text-gray-300 hover:text-white transition cursor-pointer">
+        <div class="flex items-center gap-3">
+          <button class="w-10 h-10 rounded-full ${i===0?'gold-bg text-black':'border border-white/20 text-white'} flex items-center justify-center"><i class="fas fa-play text-sm"></i></button>
+          <div>
+            <p class="font-medium">${t.name}</p>
+            <p class="text-xs text-gray-500">Twooface</p>
+          </div>
+        </div>
+        <span>${t.duration}</span>
+      </div>
+    `).join('');
+  }
+
+  function renderNews() {
+    const container = document.getElementById('newsDisplay');
+    container.innerHTML = newsItems.length === 0 ? '<p class="text-gray-500 text-sm">Nenhuma notícia publicada.</p>' : 
+      newsItems.map(n => `<div class="news-item">${n}</div>`).join('');
+    // also in admin list
+    const list = document.getElementById('newsList');
+    list.innerHTML = newsItems.map((n,i) => `<div class="flex justify-between items-center news-item text-sm"><span>n</span><buttononclick="removeNews({n}</span><button onclick="removeNews(n</span><buttononclick="removeNews({i})" class="text-red-400 text-xs"><i class="fas fa-trash"></i></button></div>`).join('');
+  }
+
+  function renderPrices() {
+    const container = document.getElementById('adminPricesDisplay');
+    container.innerHTML = prices.length === 0 ? '<p class="text-gray-400 text-sm">Nenhum preço definido.</p>' :
+      prices.map(p => `<div class="flex justify-between price-item"><span>p.label</span><spanclass="gold−textfont−bold">{p.label}</span><span class="gold-text font-bold">p.label</span><spanclass="gold−textfont−bold">{p.value}</span></div>`).join('');
+    const list = document.getElementById('priceList');
+    list.innerHTML = prices.map((p,i) => `<div class="flex justify-between items-center text-sm price-item"><span>p.label—{p.label} —p.label—{p.value}</span><button onclick="removePrice(${i})" class="text-red-400 text-xs"><i class="fas fa-trash"></i></button></div>`).join('');
+  }
+
+  // add track
+  window.addTrack = function() {
+    const name = document.getElementById('trackNameInput').value.trim();
+    const dur = document.getElementById('trackDuration').value.trim() || '3:00';
+    if (!name) return;
+    tracks.push({ name, duration: dur });
+    saveState(); renderAll();
+    document.getElementById('trackNameInput').value = '';
+    document.getElementById('trackDuration').value = '';
+  }
+
+  // add news
+  window.addNews = function() {
+    const text = document.getElementById('newsInput').value.trim();
+    if (!text) return;
+    newsItems.push(text);
+    saveState(); renderAll();
+    document.getElementById('newsInput').value = '';
+  }
+  window.removeNews = function(i) {
+    newsItems.splice(i,1);
+    saveState(); renderAll();
+  }
+
+  // add price
+  window.addPrice = function() {
+    const label = document.getElementById('priceLabel').value.trim();
+    const value = document.getElementById('priceValue').value.trim();
+    if (!label || !value) return;
+    prices.push({ label, value });
+    saveState(); renderAll();
+    document.getElementById('priceLabel').value = '';
+    document.getElementById('priceValue').value = '';
+  }
+  window.removePrice = function(i) {
+    prices.splice(i,1);
+    saveState(); renderAll();
+  }
+
+  // admin panel toggle
+  window.toggleAdmin = function() {
+    document.getElementById('adminPanel').classList.toggle('open');
+  }
+
+  // Hero image update
+  document.getElementById('heroImgInput').addEventListener('input', function() {
+    document.getElementById('heroBackground').style.backgroundImage = `url('
