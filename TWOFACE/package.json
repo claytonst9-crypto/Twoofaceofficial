@@ -1,8 +1,0 @@
-{
-  "name": "twooface-artist-website",
-  "version": "1.0.0",
-  "scripts": {
-    "build": "mkdir -p public && cp index.html public/ 2>/dev/null || echo 'Done'"
-  },
-  "dependencies": {}
-}
