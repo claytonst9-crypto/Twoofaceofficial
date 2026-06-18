@@ -94,7 +94,6 @@
     .img-placeholder-light {
       background: linear-gradient(135deg, #2a2a3a, #1a1a2e);
     }
-    /* responsive tweaks */
     @media (max-width: 640px) {
       .hero-title {
         font-size: 3rem !important;
@@ -104,6 +103,7 @@
 </head>
 <body class="relative">
 
+  <!-- CONSOLE ADMINISTRATIVO -->
   <div id="artistConsole" class="hidden fixed top-24 left-1/2 -translate-x-1/2 w-11/12 max-w-2xl z-50 glass p-6 border-2 border-yellow-600/40">
     <div class="flex justify-between items-center mb-4 border-b border-white/10 pb-2">
       <h3 class="text-xl font-bold text-yellow-500 uppercase tracking-wider"><i class="fas fa-sliders-h mr-2"></i> Twooface Dashboard</h3>
@@ -134,6 +134,7 @@
     </form>
   </div>
 
+  <!-- NAV -->
   <nav class="fixed top-0 left-0 w-full z-50 glass border-b border-white/5">
     <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
       <a href="#" class="text-2xl font-bold tracking-widest gold-text">TWOOFACE</a>
@@ -148,6 +149,7 @@
     </div>
   </nav>
 
+  <!-- HERO -->
   <section id="home" class="relative h-screen flex items-center justify-center overflow-hidden">
     <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIwIiBoZWlnaHQ9IjEwODAiPjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZyIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6IzJhMjAzYjtzdG9wLW9wYWNpdHk6MSIvPjxzdG9wIG9mZnNldD0iNTAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMGUwYzE4O3N0b3Atb3BhY2l0eToxIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMTYxYzI3O3N0b3Atb3BhY2l0eToxIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjE5MjAiIGhlaWdodD0iMTA4MCIgZmlsbD0idXJsKCNnKSIvPjwvc3ZnPg==')] bg-cover bg-center"></div>
     <div class="hero-overlay absolute inset-0"></div>
@@ -163,6 +165,7 @@
     </div>
   </section>
 
+  <!-- PLAYLIST -->
   <section class="py-20 px-6 max-w-7xl mx-auto">
     <h2 class="text-3xl md:text-4xl font-bold mb-2 gold-text">Featured Playlist</h2>
     <p class="text-gray-400 mb-10">Listen to the latest sounds</p>
@@ -221,6 +224,7 @@
     </div>
   </section>
 
+  <!-- STORE -->
   <section id="store" class="py-20 px-6 max-w-7xl mx-auto border-t border-white/5">
     <h2 class="text-3xl font-bold gold-text mb-2">Artist Store</h2>
     <p class="text-gray-400 mb-8">Official merchandise and physical prints</p>
@@ -235,6 +239,7 @@
     </div>
   </section>
 
+  <!-- ALBUMS -->
   <section id="albums" class="py-20 px-6 max-w-7xl mx-auto border-t border-white/5">
     <h2 class="text-3xl font-bold gold-text mb-2">Discography</h2>
     <p class="text-gray-400 mb-8">Full-length projects and studio records</p>
@@ -249,6 +254,7 @@
     </div>
   </section>
 
+  <!-- NEWS -->
   <section id="news" class="py-20 px-6 max-w-7xl mx-auto border-t border-white/5">
     <h2 class="text-3xl font-bold gold-text mb-2">Latest News</h2>
     <p class="text-gray-400 mb-8">Press statements, tour declarations, and updates</p>
@@ -263,6 +269,7 @@
     </div>
   </section>
 
+  <!-- STREAMING -->
   <section class="py-16 px-6 max-w-7xl mx-auto border-t border-white/5">
     <h2 class="text-3xl font-bold gold-text mb-8 text-center">Streaming Platforms</h2>
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
@@ -289,6 +296,7 @@
     </div>
   </section>
 
+  <!-- ABOUT -->
   <section id="contact" class="py-20 px-6 max-w-7xl mx-auto border-t border-white/5">
     <div class="flex flex-col md:flex-row gap-12 items-center">
       <div class="w-full md:w-1/2">
@@ -312,17 +320,7 @@
     </div>
   </section>
 
-  <section class="py-16 px-6 max-w-3xl mx-auto text-center">
-    <div class="glass p-10">
-      <h2 class="text-3xl font-bold gold-text mb-3">Stay Connected</h2>
-      <p class="text-gray-400 mb-8">Get exclusive releases, merch drops, and behind-the-scenes content.</p>
-      <form class="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto" onsubmit="event.preventDefault(); alert('Subscribed successfully!');">
-        <input type="email" placeholder="your@email.com" class="flex-1 px-5 py-3 rounded-full bg-black/40 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-gold">
-        <button type="submit" class="px-8 py-3 gold-bg text-black font-semibold rounded-full hover:bg-yellow-500 transition">Subscribe</button>
-      </form>
-    </div>
-  </section>
-
+  <!-- FOOTER -->
   <footer class="border-t border-white/10 py-10 px-6">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
       <p class="text-gray-500 text-sm">© 2026 TWOOFACE. All rights reserved.</p>
@@ -344,8 +342,8 @@
     </div>
   </footer>
 
+  <!-- SCRIPT COM CORREÇÃO DE ASPAS INTERNAS E ESCOPO -->
   <script>
-    // Smooth scroll configuration
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function(e) {
         e.preventDefault();
@@ -354,7 +352,6 @@
       });
     });
 
-    // App core management state initialization
     const MANAGEMENT_KEY = "twooface_session_active";
     const DATA_STORAGE_KEY = "twooface_grid_data";
 
@@ -387,7 +384,6 @@
       }
       
       const passMatch = prompt("Enter Twooface Security Key:");
-      // Custom security configuration matching standard parameters
       if (passMatch === "twooface2026") {
         localStorage.setItem(MANAGEMENT_KEY, "true");
         verifySessionState();
@@ -408,7 +404,6 @@
       consolePanel.classList.toggle('hidden');
     }
 
-    // Capture form submission, parse binary assets locally, and save to applicationData mapping
     document.getElementById('uploadForm').addEventListener('submit', function(e) {
       e.preventDefault();
 
@@ -434,11 +429,9 @@
           image: imageBase64String
         };
 
-        // Inject new upload item into tracking list arrays
         applicationData[type].unshift(dynamicItem);
         localStorage.setItem(DATA_STORAGE_KEY, JSON.stringify(applicationData));
         
-        // Reset inputs, render, and hide modal view panels
         document.getElementById('uploadForm').reset();
         toggleConsole();
         renderStoredGrids();
@@ -455,11 +448,10 @@
       }
     }
 
-    // Grid compilation routines
     function renderStoredGrids() {
       const checkAdmin = localStorage.getItem(MANAGEMENT_KEY) === "true";
 
-      // 1. Render Album Structure
+      // 1. Albums
       const albumsGrid = document.getElementById('albums-grid');
       const initialAlbumHTML = `
         <div class="glass p-4 album-card flex flex-col justify-between">
@@ -472,16 +464,16 @@
       
       albumsGrid.innerHTML = initialAlbumHTML + applicationData.albums.map(item => `
         <div class="glass p-4 album-card flex flex-col justify-between relative group">
-          ${checkAdmin ? `<button onclick="removeGridItem('albums', '${item.id}')" class="absolute top-6 right-6 bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center opacity-80 hover:opacity-100 z-20 transition"><i class="fas fa-trash-alt text-xs"></i></button>` : ''}
-          <img src="${item.image}" alt="Cover" class="w-full aspect-square object-cover rounded-2xl mb-4 shadow-md">
+          \${checkAdmin ? \`<button onclick="removeGridItem('albums', '\${item.id}')" class="absolute top-6 right-6 bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center opacity-80 hover:opacity-100 z-20 transition"><i class="fas fa-trash-alt text-xs"></i></button>\` : ''}
+          <img src="\${item.image}" alt="Cover" class="w-full aspect-square object-cover rounded-2xl mb-4 shadow-md">
           <div>
-            <h4 class="text-xl font-bold gold-text">${item.title}</h4>
-            <p class="text-gray-400 text-sm mt-1">${item.description}</p>
+            <h4 class="text-xl font-bold gold-text">\${item.title}</h4>
+            <p class="text-gray-400 text-sm mt-1">\${item.description}</p>
           </div>
         </div>
       `).join('');
 
-      // 2. Render Store Structure
+      // 2. Store
       const storeGrid = document.getElementById('store-grid');
       const initialStoreHTML = `
         <div class="glass p-4 album-card flex flex-col justify-between">
@@ -494,16 +486,16 @@
 
       storeGrid.innerHTML = initialStoreHTML + applicationData.store.map(item => `
         <div class="glass p-4 album-card flex flex-col justify-between relative">
-          ${checkAdmin ? `<button onclick="removeGridItem('store', '${item.id}')" class="absolute top-6 right-6 bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center opacity-80 hover:opacity-100 z-20 transition"><i class="fas fa-trash-alt text-xs"></i></button>` : ''}
-          <img src="${item.image}" alt="Merchandise" class="w-full aspect-square object-cover rounded-2xl mb-4 shadow-md">
+          \${checkAdmin ? \`<button onclick="removeGridItem('store', '\${item.id}')" class="absolute top-6 right-6 bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center opacity-80 hover:opacity-100 z-20 transition"><i class="fas fa-trash-alt text-xs"></i></button>\` : ''}
+          <img src="\${item.image}" alt="Merchandise" class="w-full aspect-square object-cover rounded-2xl mb-4 shadow-md">
           <div>
-            <h4 class="text-xl font-bold gold-text">${item.title}</h4>
-            <p class="text-gray-400 text-sm mt-1">${item.description}</p>
+            <h4 class="text-xl font-bold gold-text">\${item.title}</h4>
+            <p class="text-gray-400 text-sm mt-1">\${item.description}</p>
           </div>
         </div>
       `).join('');
 
-      // 3. Render News Structure
+      // 3. News
       const newsGrid = document.getElementById('news-grid');
       const initialNewsHTML = `
         <div class="glass p-6 flex flex-col justify-between">
@@ -516,12 +508,12 @@
 
       newsGrid.innerHTML = initialNewsHTML + applicationData.news.map(item => `
         <div class="glass p-6 flex flex-col justify-between relative">
-          ${checkAdmin ? `<button onclick="removeGridItem('news', '${item.id}')" class="absolute top-6 right-6 bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center opacity-80 hover:opacity-100 z-20 transition"><i class="fas fa-trash-alt text-xs"></i></button>` : ''}
+          \${checkAdmin ? \`<button onclick="removeGridItem('news', '\${item.id}')" class="absolute top-6 right-6 bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center opacity-80 hover:opacity-100 z-20 transition"><i class="fas fa-trash-alt text-xs"></i></button>\` : ''}
           <div>
             <span class="text-xs gold-text uppercase tracking-widest font-bold">Artist Update</span>
-            <h4 class="text-2xl font-bold mt-2 mb-3 text-white">${item.title}</h4>
-            <p class="text-gray-400 leading-relaxed text-sm mb-4">${item.description}</p>
-            <img src="${item.image}" alt="Update Promo" class="w-full h-48 object-cover rounded-xl shadow-inner">
+            <h4 class="text-2xl font-bold mt-2 mb-3 text-white">\${item.title}</h4>
+            <p class="text-gray-400 leading-relaxed text-sm mb-4">\${item.description}</p>
+            <img src="\${item.image}" alt="Update Promo" class="w-full h-48 object-cover rounded-xl shadow-inner">
           </div>
         </div>
       `).join('');
