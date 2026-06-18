@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TWOOFACE – Official Website</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    /* custom gold accent */
+    :root {
+      --gold: #d4a853;
+      --gold-light: #e8c96e;
+      --glass-bg: rgba(20, 20, 30, 0.6);
+      --glass-border: rgba(255, 255, 255, 0.08);
+    }
+    * {
+      scroll-behavior: smooth;
+    }
+    body {
+      background: #0b0b12;
+      color: #f0f0f5;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+    /* glassmorphism utility */
+    .glass {
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+    }
+    .gold-text {
+      color: var(--gold);
+    }
+    .gold-border {
+      border-color: var(--gold);
+    }
+    .gold-bg {
+      background: var(--gold);
+    }
+    .hover-gold:hover {
+      color: var(--gold-light);
+      transition: color 0.3s ease;
+    }
+    /* hero overlay */
+    .hero-overlay {
+      background: radial-gradient(ellipse at center, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.8) 100%);
+    }
+    /* smooth nav */
+    .nav-link {
+      position: relative;
+      padding-bottom: 4px;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: var(--gold);
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+    .nav-link:hover::after {
+      width: 100%;
+    }
+    /* player bar mockup */
+    .player-progress {
+      background: #2a2a3a;
+      border-radius: 999px;
+      height: 4px;
+    }
+    .player-progress-fill {
+      width: 45%;
+      height: 100%;
+      background: var(--gold);
+      border-radius: 999px;
+    }
+    /* album hover */
+    .album-card {
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+    .album-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 24px 40px -12px rgba(212, 168, 83, 0.25);
+    }
+    /* placeholder images (gradients) */
+    .img-placeholder {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+    }
+    .img-placeholder-light {
+      background: linear-gradient(135deg, #2a2a3a, #1a1a2e);
+    }
+    @media (max-width: 640px) {
+      .hero-title {
+        font-size: 3rem !important;
+      }
+    }
+  </style>
+</head>
+<body class="relative">
+
+  <!-- CONSOLE ADMINISTRATIVO -->
+  <div id="artistConsole" class="hidden fixed top-24 left-1/2 -translate-x-1/2 w-11/12 max-w-2xl z-50 glass p-6 border-2 border-yellow-600/40">
+    <div class="flex justify-between items-center mb-4 border-b border-white/10 pb-2">
+      <h3 class="text-xl font-bold text-yellow-500 uppercase tracking-wider"><i class="fas fa-sliders-h mr-2"></i> Twooface Dashboard</h3>
+      <button onclick="toggleConsole()" class="text-gray-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+    </div>
+    <form id="uploadForm" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium mb-1 text-gray-300">Content Category</label>
+        <select id="contentType" class="w-full bg-black/40 border border-white/20 p-2.5 rounded-xl focus:border-gold focus:outline-none">
+          <option value="albums">Albums / Releases</option>
+          <option value="store">Store / Merchandise</option>
+          <option value="news">News Posts</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1 text-gray-300">Title / Item Name</label>
+        <input type="text" id="contentTitle" required placeholder="e.g., Blood Moon Symphony" class="w-full bg-black/40 border border-white/20 p-2.5 rounded-xl focus:border-gold focus:outline-none text-white">
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1 text-gray-300">Description / Subtext</label>
+        <textarea id="contentDesc" rows="2" required placeholder="Provide context or pricing parameters..." class="w-full bg-black/40 border border-white/20 p-2.5 rounded-xl focus:border-gold focus:outline-none text-white"></textarea>
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1 text-gray-300">Upload Cover Art / Promo Image</label>
+        <input type="file" id="contentFile" accept="image/*" required class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-amber-500 file:text-black hover:file:bg-amber-400 cursor-pointer">
+      </div>
+      <button type="submit" class="w-full py-3 mt-2 gold-bg text-black font-bold uppercase tracking-wider rounded-xl hover:bg-yellow-500 transition shadow-lg">Publish Post to Live Grid</button>
+    </form>
+  </div>
+
+  <!-- NAV -->
+  <nav class="fixed top-0 left-0 w-full z-50 glass border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <a href="#" class="text-2xl font-bold tracking-widest gold-text">TWOOFACE</a>
+      <div class="hidden md:flex items-center gap-8 text-sm font-medium uppercase tracking-wider text-gray-300">
+        <a href="#home" class="nav-link">Home</a>
+        <a href="#store" class="nav-link">Store</a>
+        <a href="#albums" class="nav-link">Albums</a>
+        <a href="#news" class="nav-link">News</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </div>
+      <button class="md:hidden text-white text-2xl" aria-label="menu"><i class="fas fa-bars"></i></button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="home" class="relative h-screen flex items-center justify-center overflow-hidden">
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIwIiBoZWlnaHQ9IjEwODAiPjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZyIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6IzJhMjAzYjtzdG9wLW9wYWNpdHk6MSIvPjxzdG9wIG9mZnNldD0iNTAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMGUwYzE4O3N0b3Atb3BhY2l0eToxIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMTYxYzI3O3N0b3Atb3BhY2l0eToxIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjE5MjAiIGhlaWdodD0iMTA4MCIgZmlsbD0idXJsKCNnKSIvPjwvc3ZnPg==')] bg-cover bg-center"></div>
+    <div class="hero-overlay absolute inset-0"></div>
+    <div class="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_20%_50%,_#d4a853_0%,_transparent_60%)]"></div>
+    <div class="relative z-10 text-center px-6 max-w-4xl">
+      <h1 class="text-6xl md:text-8xl font-extrabold tracking-tight leading-none mb-4 gold-text drop-shadow-2xl hero-title">TWOOFACE</h1>
+      <p class="text-2xl md:text-3xl font-light text-gray-200 mb-8 drop-shadow">New Music Out Now</p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="#" class="px-8 py-4 gold-bg text-black font-semibold rounded-full hover:bg-yellow-500 transition shadow-2xl text-lg">Listen Now</a>
+        <a href="#" class="px-8 py-4 border-2 border-white/30 text-white font-semibold rounded-full hover:bg-white/10 transition text-lg">Buy Music</a>
+        <a href="#" class="px-8 py-4 border-2 gold-border gold-text font-semibold rounded-full hover:bg-gold/10 transition text-lg">Latest Album</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLAYLIST -->
+  <section class="py-20 px-6 max-w-7xl mx-auto">
+    <h2 class="text-3xl md:text-4xl font-bold mb-2 gold-text">Featured Playlist</h2>
+    <p class="text-gray-400 mb-10">Listen to the latest sounds</p>
+    <div class="glass p-6 md:p-8">
+      <div class="flex flex-col md:flex-row gap-6 items-start">
+        <div class="w-full md:w-48 h-48 rounded-2xl img-placeholder flex items-center justify-center text-5xl opacity-60">
+          <i class="fas fa-compact-disc"></i>
+        </div>
+        <div class="flex-1 w-full">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between text-sm text-gray-300 hover:text-white transition cursor-pointer">
+              <div class="flex items-center gap-3">
+                <button class="w-10 h-10 rounded-full gold-bg text-black flex items-center justify-center"><i class="fas fa-play text-sm"></i></button>
+                <div>
+                  <p class="font-medium">Midnight Empire</p>
+                  <p class="text-xs text-gray-500">Twooface</p>
+                </div>
+              </div>
+              <span>3:42</span>
+            </div>
+            <div class="flex items-center justify-between text-sm text-gray-300 hover:text-white transition cursor-pointer">
+              <div class="flex items-center gap-3">
+                <button class="w-10 h-10 rounded-full border border-white/20 text-white flex items-center justify-center"><i class="fas fa-play text-sm"></i></button>
+                <div>
+                  <p class="font-medium">Shadow Dance</p>
+                  <p class="text-xs text-gray-500">Twooface</p>
+                </div>
+              </div>
+              <span>4:15</span>
+            </div>
+            <div class="flex items-center justify-between text-sm text-gray-300 hover:text-white transition cursor-pointer">
+              <div class="flex items-center gap-3">
+                <button class="w-10 h-10 rounded-full border border-white/20 text-white flex items-center justify-center"><i class="fas fa-play text-sm"></i></button>
+                <div>
+                  <p class="font-medium">Neon Glow</p>
+                  <p class="text-xs text-gray-500">Twooface</p>
+                </div>
+              </div>
+              <span>3:58</span>
+            </div>
+          </div>
+          <div class="mt-6">
+            <div class="player-progress w-full"><div class="player-progress-fill"></div></div>
+            <div class="flex justify-between text-xs text-gray-500 mt-1"><span>1:22</span><span>-2:20</span></div>
+          </div>
+          <div class="flex flex-wrap gap-3 mt-6">
+            <span class="text-xs text-gray-400 uppercase tracking-wider self-center mr-2">Connect:</span>
+            <a href="#" class="text-lg text-white/70 hover:text-green-500 transition"><i class="fab fa-spotify"></i></a>
+            <a href="#" class="text-lg text-white/70 hover:text-pink-500 transition"><i class="fab fa-apple"></i></a>
+            <a href="#" class="text-lg text-white/70 hover:text-orange-500 transition"><i class="fas fa-music"></i></a>
+            <a href="#" class="text-lg text-white/70 hover:text-red-500 transition"><i class="fab fa-youtube"></i></a>
+            <a href="#" class="text-lg text-white/70 hover:text-orange-300 transition"><i class="fab fa-soundcloud"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STORE -->
+  <section id="store" class="py-20 px-6 max-w-7xl mx-auto border-t border-white/5">
+    <h2 class="text-3xl font-bold gold-text mb-2">Artist Store</h2>
+    <p class="text-gray-400 mb-8">Official merchandise and physical prints</p>
+    <div id="store-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="glass p-4 album-card flex flex-col justify-between">
+        <div class="w-full aspect-square rounded-2xl img-placeholder flex items-center justify-center text-4xl text-white/20 mb-4">Limited Vinyl</div>
+        <div>
+          <h4 class="text-xl font-bold gold-text">Vinyl Deluxe Edition</h4>
+          <p class="text-gray-400 text-sm mt-1">$35.00 — Limited Availability</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ALBUMS -->
+  <section id="albums" class="py-20 px-6 max-w-7xl mx-auto border-t border-white/5">
+    <h2 class="text-3xl font-bold gold-text mb-2">Discography</h2>
+    <p class="text-gray-400 mb-8">Full-length projects and studio records</p>
+    <div id="albums-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="glass p-4 album-card flex flex-col justify-between">
+        <div class="w-full aspect-square rounded-2xl img-placeholder-light flex items-center justify-center text-4xl text-white/20 mb-4">LP Cover</div>
+        <div>
+          <h4 class="text-xl font-bold gold-text">Darkness Revisited</h4>
+          <p class="text-gray-400 text-sm mt-1">Released 2025 • 12 Tracks</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEWS -->
+  <section id="news" class="py-20 px-6 max-w-7xl mx-auto border-t border-white/5">
+    <h2 class="text-3xl font-bold gold-text mb-2">Latest News</h2>
+    <p class="text-gray-400 mb-8">Press statements, tour declarations, and updates</p>
+    <div id="news-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="glass p-6 flex flex-col justify-between">
+        <div>
+          <span class="text-xs gold-text uppercase tracking-widest font-bold">Tour Announcement</span>
+          <h4 class="text-2xl font-bold mt-2 mb-3 text-white">Global Arena Stage Run Confirmed</h4>
+          <p class="text-gray-400 leading-relaxed text-sm">Twooface announces a series of global dates starting next season. Registration for priority passes is open.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STREAMING -->
+  <section class="py-16 px-6 max-w-7xl mx-auto border-t border-white/5">
+    <h2 class="text-3xl font-bold gold-text mb-8 text-center">Streaming Platforms</h2>
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      <a href="#" class="glass p-6 flex flex-col items-center gap-3 hover:scale-105 transition duration-300">
+        <i class="fab fa-spotify text-4xl text-green-500"></i>
+        <span class="font-medium">Spotify</span>
+      </a>
+      <a href="#" class="glass p-6 flex flex-col items-center gap-3 hover:scale-105 transition duration-300">
+        <i class="fab fa-apple text-4xl text-pink-400"></i>
+        <span class="font-medium">Apple Music</span>
+      </a>
+      <a href="#" class="glass p-6 flex flex-col items-center gap-3 hover:scale-105 transition duration-300">
+        <i class="fas fa-music text-4xl text-orange-500"></i>
+        <span class="font-medium">Audiomack</span>
+      </a>
+      <a href="#" class="glass p-6 flex flex-col items-center gap-3 hover:scale-105 transition duration-300">
+        <i class="fab fa-youtube text-4xl text-red-500"></i>
+        <span class="font-medium">YouTube Music</span>
+      </a>
+      <a href="#" class="glass p-6 flex flex-col items-center gap-3 hover:scale-105 transition duration-300">
+        <i class="fab fa-soundcloud text-4xl text-orange-400"></i>
+        <span class="font-medium">SoundCloud</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="contact" class="py-20 px-6 max-w-7xl mx-auto border-t border-white/5">
+    <div class="flex flex-col md:flex-row gap-12 items-center">
+      <div class="w-full md:w-1/2">
+        <div class="w-full aspect-square rounded-3xl img-placeholder-light flex items-center justify-center text-7xl opacity-40">
+          <i class="fas fa-user"></i>
+        </div>
+      </div>
+      <div class="w-full md:w-1/2">
+        <div class="flex justify-between items-start">
+          <h2 class="text-4xl font-bold mb-6 gold-text">About Twooface</h2>
+          <button id="logoutBtn" onclick="processLogout()" class="hidden text-xs border border-red-500/40 text-red-400 px-3 py-1 rounded-full hover:bg-red-500/10 transition">Logout Panel</button>
+        </div>
+        <p class="text-gray-300 leading-relaxed text-lg">
+          Twooface is a visionary recording artist known for blending dark cinematic soundscapes with raw emotion. 
+          Hailing from the underground, his music transcends genres—merging trip-hop, electronic, and alternative R&B. 
+          With millions of streams worldwide, he continues to push boundaries, delivering immersive experiences 
+          that resonate deeply with fans across the globe.
+        </p>
+        <p class="text-gray-400 mt-4">"Every track is a story. Every album is a world."</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-white/10 py-10 px-6">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+      <p class="text-gray-500 text-sm">© 2026 TWOOFACE. All rights reserved.</p>
+      
+      <div class="flex items-center gap-3">
+        <button onclick="triggerPortalAuthentication()" class="text-gray-600 hover:text-gold transition text-xs flex items-center gap-1.5"><i class="fas fa-lock text-[10px]"></i> Portal</button>
+      </div>
+
+      <div class="flex gap-5 text-2xl text-gray-400">
+        <a href="#" class="hover:text-pink-500 transition"><i class="fab fa-instagram"></i></a>
+        <a href="#" class="hover:text-blue-600 transition"><i class="fab fa-facebook"></i></a>
+        <a href="#" class="hover:text-gray-200 transition"><i class="fab fa-tiktok"></i></a>
+        <a href="#" class="hover:text-red-500 transition"><i class="fab fa-youtube"></i></a>
+        <a href="#" class="hover:text-green-500 transition"><i class="fab fa-spotify"></i></a>
+        <a href="#" class="hover:text-pink-400 transition"><i class="fab fa-apple"></i></a>
+        <a href="#" class="hover:text-orange-400 transition"><i class="fab fa-soundcloud"></i></a>
+        <a href="#" class="hover:text-gray-300 transition"><i class="fab fa-x-twitter"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- SCRIPT COM CORREÇÃO DE ASPAS INTERNAS E ESCOPO -->
+  <script>
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if(target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    const MANAGEMENT_KEY = "twooface_session_active";
+    const DATA_STORAGE_KEY = "twooface_grid_data";
+
+    let applicationData = JSON.parse(localStorage.getItem(DATA_STORAGE_KEY)) || {
+      albums: [],
+      store: [],
+      news: []
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderStoredGrids();
+      verifySessionState();
+    });
+
+    function verifySessionState() {
+      const activeSession = localStorage.getItem(MANAGEMENT_KEY);
+      const logoutBtn = document.getElementById('logoutBtn');
+      if (activeSession === "true") {
+        logoutBtn.classList.remove('hidden');
+      } else {
+        logoutBtn.classList.add('hidden');
+        document.getElementById('artistConsole').classList.add('hidden');
+      }
+    }
+
+    function triggerPortalAuthentication() {
+      if (localStorage.getItem(MANAGEMENT_KEY) === "true") {
+        toggleConsole();
+        return;
+      }
+      
+      const passMatch = prompt("Enter Twooface Security Key:");
+      if (passMatch === "twooface2026") {
+        localStorage.setItem(MANAGEMENT_KEY, "true");
+        verifySessionState();
+        toggleConsole();
+      } else if (passMatch !== null) {
+        alert("Invalid security access configuration token.");
+      }
+    }
+
+    function processLogout() {
+      localStorage.removeItem(MANAGEMENT_KEY);
+      verifySessionState();
+      alert("Session management closed successfully.");
+    }
+
+    function toggleConsole() {
+      const consolePanel = document.getElementById('artistConsole');
+      consolePanel.classList.toggle('hidden');
+    }
+
+    document.getElementById('uploadForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const type = document.getElementById('contentType').value;
+      const title = document.getElementById('contentTitle').value;
+      const desc = document.getElementById('contentDesc').value;
+      const fileInput = document.getElementById('contentFile');
+      const file = fileInput.files[0];
+
+      if (!file) {
+        alert("Please select an image file to proceed.");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const imageBase64String = event.target.result;
+
+        const dynamicItem = {
+          id: 'item_' + Date.now(),
+          title: title,
+          description: desc,
+          image: imageBase64String
+        };
+
+        applicationData[type].unshift(dynamicItem);
+        localStorage.setItem(DATA_STORAGE_KEY, JSON.stringify(applicationData));
+        
+        document.getElementById('uploadForm').reset();
+        toggleConsole();
+        renderStoredGrids();
+      };
+      
+      reader.readAsDataURL(file);
+    });
+
+    function removeGridItem(type, itemId) {
+      if(confirm("Confirm deletion of this published item?")) {
+        applicationData[type] = applicationData[type].filter(item => item.id !== itemId);
+        localStorage.setItem(DATA_STORAGE_KEY, JSON.stringify(applicationData));
+        renderStoredGrids();
+      }
+    }
+
+    function renderStoredGrids() {
+      const checkAdmin = localStorage.getItem(MANAGEMENT_KEY) === "true";
+
+      // 1. Albums
+      const albumsGrid = document.getElementById('albums-grid');
+      const initialAlbumHTML = `
+        <div class="glass p-4 album-card flex flex-col justify-between">
+          <div class="w-full aspect-square rounded-2xl img-placeholder flex items-center justify-center text-4xl text-white/20 mb-4">LP Cover</div>
+          <div>
+            <h4 class="text-xl font-bold gold-text">Darkness Revisited</h4>
+            <p class="text-gray-400 text-sm mt-1">Released 2025 • 12 Tracks</p>
+          </div>
+        </div>`;
+      
+      albumsGrid.innerHTML = initialAlbumHTML + applicationData.albums.map(item => `
+        <div class="glass p-4 album-card flex flex-col justify-between relative group">
+          \${checkAdmin ? \`<button onclick="removeGridItem('albums', '\${item.id}')" class="absolute top-6 right-6 bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center opacity-80 hover:opacity-100 z-20 transition"><i class="fas fa-trash-alt text-xs"></i></button>\` : ''}
+          <img src="\${item.image}" alt="Cover" class="w-full aspect-square object-cover rounded-2xl mb-4 shadow-md">
+          <div>
+            <h4 class="text-xl font-bold gold-text">\${item.title}</h4>
+            <p class="text-gray-400 text-sm mt-1">\${item.description}</p>
+          </div>
+        </div>
+      `).join('');
+
+      // 2. Store
+      const storeGrid = document.getElementById('store-grid');
+      const initialStoreHTML = `
+        <div class="glass p-4 album-card flex flex-col justify-between">
+          <div class="w-full aspect-square rounded-2xl img-placeholder flex items-center justify-center text-4xl text-white/20 mb-4">Limited Vinyl</div>
+          <div>
+            <h4 class="text-xl font-bold gold-text">Vinyl Deluxe Edition</h4>
+            <p class="text-gray-400 text-sm mt-1">$35.00 — Limited Availability</p>
+          </div>
+        </div>`;
+
+      storeGrid.innerHTML = initialStoreHTML + applicationData.store.map(item => `
+        <div class="glass p-4 album-card flex flex-col justify-between relative">
+          \${checkAdmin ? \`<button onclick="removeGridItem('store', '\${item.id}')" class="absolute top-6 right-6 bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center opacity-80 hover:opacity-100 z-20 transition"><i class="fas fa-trash-alt text-xs"></i></button>\` : ''}
+          <img src="\${item.image}" alt="Merchandise" class="w-full aspect-square object-cover rounded-2xl mb-4 shadow-md">
+          <div>
+            <h4 class="text-xl font-bold gold-text">\${item.title}</h4>
+            <p class="text-gray-400 text-sm mt-1">\${item.description}</p>
+          </div>
+        </div>
+      `).join('');
+
+      // 3. News
+      const newsGrid = document.getElementById('news-grid');
+      const initialNewsHTML = `
+        <div class="glass p-6 flex flex-col justify-between">
+          <div>
+            <span class="text-xs gold-text uppercase tracking-widest font-bold">Tour Announcement</span>
+            <h4 class="text-2xl font-bold mt-2 mb-3 text-white">Global Arena Stage Run Confirmed</h4>
+            <p class="text-gray-400 leading-relaxed text-sm">Twooface announces a series of global dates starting next season. Registration for priority passes is open.</p>
+          </div>
+        </div>`;
+
+      newsGrid.innerHTML = initialNewsHTML + applicationData.news.map(item => `
+        <div class="glass p-6 flex flex-col justify-between relative">
+          \${checkAdmin ? \`<button onclick="removeGridItem('news', '\${item.id}')" class="absolute top-6 right-6 bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center opacity-80 hover:opacity-100 z-20 transition"><i class="fas fa-trash-alt text-xs"></i></button>\` : ''}
+          <div>
+            <span class="text-xs gold-text uppercase tracking-widest font-bold">Artist Update</span>
+            <h4 class="text-2xl font-bold mt-2 mb-3 text-white">\${item.title}</h4>
+            <p class="text-gray-400 leading-relaxed text-sm mb-4">\${item.description}</p>
+            <img src="\${item.image}" alt="Update Promo" class="w-full h-48 object-cover rounded-xl shadow-inner">
+          </div>
+        </div>
+      `).join('');
+    }
+  </script>
+</body>
+</html>
